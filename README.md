@@ -231,9 +231,8 @@ This project delivers a professional, scalable, and well-documented database sol
 
 ### 📁 Project Structure
 
-- schema.sql – Complete table creation scripts
-- queries.sql – All demonstrated SQL queries
-- README.md – Project documentation (this file)
+- [queries.sql](./queries.sql) – All demonstrated SQL queries
+- [README.md](./README.md) – Project documentation (this file)
 
 **Author**: MD AHBABUZZAMAN
 **Role**: FullStack Developer
