@@ -1,61 +1,4 @@
 -- ======================================
--- DROP TABLES (for safe re-run)
--- ======================================
-
-DROP TABLE IF EXISTS bookings;
-DROP TABLE IF EXISTS vehicles;
-DROP TABLE IF EXISTS users;
-
--- ======================================
--- USERS TABLE
--- ======================================
-
-CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
-    role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'Customer'))
-);
-
--- ======================================
--- VEHICLES TABLE
--- ======================================
-
-CREATE TABLE vehicles (
-    vehicle_id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(20) NOT NULL CHECK (type IN ('car', 'bike', 'truck')),
-    model VARCHAR(20),
-    registration_number VARCHAR(50) NOT NULL UNIQUE,
-    rental_price NUMERIC(10,2) NOT NULL,
-    status VARCHAR(20) NOT NULL 
-        CHECK (status IN ('available', 'rented', 'maintenance'))
-);
-
--- ======================================
--- BOOKINGS TABLE
--- ======================================
-
-CREATE TABLE bookings (
-    booking_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    vehicle_id INT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    status VARCHAR(20) NOT NULL 
-        CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
-    total_cost NUMERIC(10,2) NOT NULL,
-
-    CONSTRAINT fk_user
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
-
-    CONSTRAINT fk_vehicle
-        FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
-);
-
--- ======================================
 -- QUERY 1: JOIN
 -- Retrieve booking info with customer & vehicle names
 -- ======================================
@@ -83,7 +26,7 @@ SELECT
     v.type,
     v.model,
     v.registration_number,
-    v.price_per_day AS rental_price,
+    v.rental_price AS rental_price,
     v.status
 FROM vehicles v
 WHERE NOT EXISTS (
@@ -103,7 +46,7 @@ SELECT
     type,
     model,
     registration_number,
-    price_per_day AS rental_price,
+    rental_price AS rental_price,
     status
 FROM vehicles
 WHERE status = 'available'
