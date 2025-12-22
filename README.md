@@ -1,58 +1,35 @@
-🚗 Vehicle Rental System – Database Design & SQL Queries
-📌 Project Overview
+# 🚗 Vehicle Rental System – Relational Database Design
 
-The Vehicle Rental System is a relational database project developed to manage vehicle rentals efficiently.
-It demonstrates robust database schema design, entity relationships, and advanced SQL querying techniques using PostgreSQL.
+## 📌 Project Overview
 
-This system models real-world rental operations such as:
+The **Vehicle Rental System** is a robust relational database project built using **PostgreSQL**. It demonstrates professional database schema design, entity-relationship modeling, data integrity enforcement, and advanced SQL querying techniques.
 
-Managing users (customers and admins)
+This system effectively models real-world vehicle rental operations, including:
 
-Tracking vehicles and their availability
+- User management (customers and administrators)
+- Vehicle inventory tracking with availability status
+- Booking management with rental periods and transaction statuses
+- Actionable business insights through sophisticated queries
 
-Handling bookings with statuses and rental periods
+## 🎯 Project Objectives
 
-Extracting actionable insights through SQL queries
+- Design a fully normalized relational database (at least 3NF)
+- Implement one-to-many relationships with proper referential integrity
+- Enforce logical one-to-one associations between bookings, users, and vehicles
+- Ensure data consistency using constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK)
+- Demonstrate professional SQL techniques including JOINs, subqueries (EXISTS), filtering, grouping, and aggregation
 
-🎯 Project Objectives
+## 🗂️ Database Schema
 
-Design a normalized relational database
+### Entity-Relationship Summary
 
-Implement one-to-many and logical one-to-one relationships
+- **One User** → **Many Bookings**
+- **One Vehicle** → **Many Bookings**
+- **Logical One-to-One**: Each booking is associated with exactly one user and one vehicle
 
-Enforce data integrity using constraints
+### 1️⃣ Users Table
 
-Write professional SQL queries using:
-
-JOIN
-
-WHERE
-
-EXISTS
-
-GROUP BY and HAVING
-
-🗂️ Database Schema Overview
-Tables
-
-Users – Stores system users and their roles
-
-Vehicles – Stores vehicle details, pricing, and availability
-
-Bookings – Tracks rental transactions and relationships
-
-Relationships
-
-One User → Many Bookings
-
-One Vehicle → Many Bookings
-
-Logical One-to-One: Each Booking connects exactly one User and one Vehicle
-
-🏗️ Database Schema (DDL)
-1️⃣ Users Table
-
-```
+```sql
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -63,31 +40,33 @@ CREATE TABLE users (
 );
 ```
 
-Purpose:
-Stores system users and defines access roles.
+**Purpose** : Stores authenticated system users with role-based access control.
 
-Sample Table Data:
-| user_id | name | email | phone | role |
+#### Sample Data :
+
+| user_id | name    | email                                       | phone      | role     |
 | ------- | ------- | ------------------------------------------- | ---------- | -------- |
-| 1 | Alice | [alice@mail.com](mailto:alice@mail.com) | 1234567890 | Customer |
-| 2 | Bob | [bob@mail.com](mailto:bob@mail.com) | 9876543210 | Admin |
-| 3 | Charlie | [charlie@mail.com](mailto:charlie@mail.com) | 4567891230 | Customer |
+| 1       | Alice   | [alice@mail.com](mailto:alice@mail.com)     | 1234567890 | Customer |
+| 2       | Bob     | [bob@mail.com](mailto:bob@mail.com)         | 9876543210 | Admin    |
+| 3       | Charlie | [charlie@mail.com](mailto:charlie@mail.com) | 4567891230 | Customer |
 
-2️⃣ Vehicles Table
+### 2️⃣ Vehicles Table
+
+```sql
 CREATE TABLE vehicles (
-vehicle_id SERIAL PRIMARY KEY,
-name VARCHAR(100) NOT NULL,
-type VARCHAR(20) NOT NULL CHECK (type IN ('car', 'bike', 'truck')),
-model VARCHAR(20),
-registration_number VARCHAR(50) NOT NULL UNIQUE,
-rental_price NUMERIC(10,2) NOT NULL,
-status VARCHAR(20) NOT NULL CHECK (status IN ('available', 'rented', 'maintenance'))
+    vehicle_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(20) NOT NULL CHECK (type IN ('car', 'bike', 'truck')),
+    model VARCHAR(20),
+    registration_number VARCHAR(50) NOT NULL UNIQUE,
+    rental_price NUMERIC(10,2) NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('available', 'rented', 'maintenance'))
 );
+```
 
-Purpose:
-Stores vehicle information, pricing, and availability.
+**Purpose** : Manages vehicle inventory, pricing, and current availability status.
 
-Sample Table Data:
+#### Sample Data :
 
 | vehicle_id | name           | type  | model | registration_number | rental_price | status      |
 | ---------- | -------------- | ----- | ----- | ------------------- | ------------ | ----------- |
@@ -96,27 +75,26 @@ Sample Table Data:
 | 3          | Yamaha R15     | bike  | 2023  | GHI-789             | 30.00        | available   |
 | 4          | Ford F-150     | truck | 2020  | JKL-012             | 100.00       | maintenance |
 
-3️⃣ Bookings Table
+### 3️⃣ Bookings Table
 
+```sql
 CREATE TABLE bookings (
-booking_id SERIAL PRIMARY KEY,
-user_id INT NOT NULL,
-vehicle_id INT NOT NULL,
-start_date DATE NOT NULL,
-end_date DATE NOT NULL,
-status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
-total_cost NUMERIC(10,2) NOT NULL,
+    booking_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    vehicle_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
+    total_cost NUMERIC(10,2) NOT NULL,
 
-    CONSTRAINT fk_user
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
-
-    CONSTRAINT fk_vehicle
-        FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
-
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT fk_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
 );
+```
 
-Purpose:
-Represents rental transactions and enforces relationships between users and vehicles.
+**Purpose** : Records rental transactions and enforces relationships between users and vehicles.
+
+#### Sample Data :
 
 | booking_id | user_id | vehicle_id | start_date | end_date   | status    | total_cost |
 | ---------- | ------- | ---------- | ---------- | ---------- | --------- | ---------- |
@@ -125,30 +103,27 @@ Represents rental transactions and enforces relationships between users and vehi
 | 3          | 3       | 2          | 2023-12-01 | 2023-12-02 | confirmed | 60.00      |
 | 4          | 1       | 1          | 2023-12-10 | 2023-12-12 | pending   | 100.00     |
 
-📊 SQL Queries, Purpose & Sample Output
-🔹 Query 1: Booking Details with Customer and Vehicle Names (JOIN)
+### 📊 Key SQL Queries
 
+#### Query 1: Full Booking Details with Customer and Vehicle Information (JOIN)
+
+```sql
 SELECT
-b.booking_id,
-u.name AS customer_name,
-v.name AS vehicle_name,
-b.start_date,
-b.end_date,
-b.status
+    b.booking_id,
+    u.name AS customer_name,
+    v.name AS vehicle_name,
+    b.start_date,
+    b.end_date,
+    b.status
 FROM bookings b
 INNER JOIN users u ON b.user_id = u.user_id
 INNER JOIN vehicles v ON b.vehicle_id = v.vehicle_id
 ORDER BY b.booking_id;
+```
 
-Purpose:
+**Purpose** : Provides a comprehensive view of all bookings for administrative dashboards and reporting.
 
-Combines data from multiple tables
-
-Provides a complete booking overview
-
-Useful for admin dashboards and reporting
-
-Sample Output:
+#### Sample Data :
 
 | booking_id | customer_name | vehicle_name   | start_date | end_date   | status    |
 | ---------- | ------------- | -------------- | ---------- | ---------- | --------- |
@@ -157,106 +132,108 @@ Sample Output:
 | 3          | Charlie       | Honda Civic    | 2023-12-01 | 2023-12-02 | confirmed |
 | 4          | Alice         | Toyota Corolla | 2023-12-10 | 2023-12-12 | pending   |
 
-🔹 Query 2: Vehicles That Have Never Been Booked (EXISTS)
+#### 🔹 Query 2: Vehicles That Have Never Been Booked (EXISTS)
 
+```sql
 SELECT
-v.vehicle_id,
-v.name,
-v.type,
-v.model,
-v.registration_number,
-v.rental_price,
-v.status
+    v.vehicle_id,
+    v.name,
+    v.type,
+    v.model,
+    v.registration_number,
+    v.rental_price,
+    v.status
 FROM vehicles v
 WHERE NOT EXISTS (
-SELECT 1
-FROM bookings b
-WHERE b.vehicle_id = v.vehicle_id
+    SELECT 1
+    FROM bookings b
+    WHERE b.vehicle_id = v.vehicle_id
 );
+```
 
-Purpose:
+**Purpose** :
 
-Identifies unused or idle vehicles
+- Identifies unused or idle vehicles
 
-Helps in promotions or fleet optimization
+- Helps in promotions or fleet optimization
 
-Sample Output:
+#### Sample Data :
 
 | vehicle_id | name       | type  | model | registration_number | rental_price | status      |
 | ---------- | ---------- | ----- | ----- | ------------------- | ------------ | ----------- |
 | 3          | Yamaha R15 | bike  | 2023  | GHI-789             | 30.00        | available   |
 | 4          | Ford F-150 | truck | 2020  | JKL-012             | 100.00       | maintenance |
 
-🔹 Query 3: Available Vehicles of a Specific Type (WHERE)
+#### 🔹 Query 3: Available Vehicles of a Specific Type (WHERE)
 
+```sql
 SELECT
-vehicle_id,
-name,
-type,
-model,
-registration_number,
-rental_price,
-status
+    vehicle_id,
+    name,
+    type,
+    model,
+    registration_number,
+    rental_price,
+    status
 FROM vehicles
 WHERE status = 'available'
-AND type = 'car';
+  AND type = 'car';
+```
 
-Purpose:
+**Purpose** :
 
-Helps customers find available vehicles
+- Helps customers find available vehicles
 
-Filters results based on business requirements
+- Filters results based on business requirements
 
-Sample Output:
+#### Sample Data :
 
 | vehicle_id | name           | type | model | registration_number | rental_price | status    |
 | ---------- | -------------- | ---- | ----- | ------------------- | ------------ | --------- |
 | 1          | Toyota Corolla | car  | 2022  | ABC-123             | 50.00        | available |
 
-🔹 Query 4: Vehicles with More Than 2 Bookings (GROUP BY & HAVING)
+#### 🔹 Query 4: Vehicles with More Than 2 Bookings (GROUP BY & HAVING)
 
+```sql
 SELECT
-v.name AS vehicle_name,
-COUNT(b.booking_id) AS total_bookings
+    v.name AS vehicle_name,
+    COUNT(b.booking_id) AS total_bookings
 FROM bookings b
 INNER JOIN vehicles v ON b.vehicle_id = v.vehicle_id
 GROUP BY v.name
 HAVING COUNT(b.booking_id) > 2;
+```
 
-Purpose:
+**Purpose** :
 
-Identifies high-demand vehicles
+- Identifies high-demand vehicles
 
-Useful for pricing and demand analysis
+- Useful for pricing and demand analysis
 
-Sample Output:
+#### Sample Data :
 
 | vehicle_name | total_bookings |
 | ------------ | -------------- |
 | Honda Civic  | 3              |
 
-🧠 Key Concepts Demonstrated
+### 🧠 Key Concepts Demonstrated
 
-Relational database modeling
+- Relational database normalization
+- Primary and foreign key constraints
+- Data integrity through CHECK and UNIQUE constraints
+- Multi-table JOIN operations
+- Correlated subqueries with EXISTS/NOT EXISTS
+- Aggregation with GROUP BY and conditional filtering using HAVING
 
-Primary & foreign key constraints
+### ✅ Conclusion
 
-Logical one-to-one relationships
+This project delivers a professional, scalable, and well-documented database solution for a vehicle rental platform. It meets both academic standards and real-world operational requirements while showcasing clean, efficient SQL practices.
 
-SQL joins and subqueries
+### 📁 Project Structure
 
-Aggregate functions and filtering
+- schema.sql – Complete table creation scripts
+- queries.sql – All demonstrated SQL queries
+- README.md – Project documentation (this file)
 
-✅ Conclusion
-
-This project presents a complete, professional, and well-structured database solution for a Vehicle Rental System.
-It satisfies functional, academic, and real-world requirements while demonstrating professional SQL usage.
-
-📁 Project Files
-File Description
-schema.sql Table creation scripts
-queries.sql SQL queries
-README.md Project documentation
-
-Author: Ahbab Tahmim
-Frontend / MERN Stack Developer
+**Author**: MD AHBABUZZAMAN
+**Role**: FullStack Developer
