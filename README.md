@@ -13,7 +13,7 @@ This system effectively models real-world vehicle rental operations, including:
 
 ## 🎯 Project Objectives
 
-- Design a fully normalized relational database (at least 3NF)
+- Design a fully normalized relational database
 - Implement one-to-many relationships with proper referential integrity
 - Enforce logical one-to-one associations between bookings, users, and vehicles
 - Ensure data consistency using constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK)
@@ -234,5 +234,4 @@ This project delivers a professional, scalable, and well-documented database sol
 - [queries.sql](./queries.sql) – All demonstrated SQL queries
 - [README.md](./README.md) – Project documentation (this file)
 
-**Author**: MD AHBABUZZAMAN
-**Role**: FullStack Developer
+
