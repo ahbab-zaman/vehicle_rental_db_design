@@ -40,6 +40,16 @@ CREATE TABLE users (
 );
 ```
 
+```sql
+INSERT INTO users (name, email, password, phone, role)
+VALUES
+  ('Alice', 'alice@example.com', 'alice123', '1234567890', 'Customer'),
+  ('Bob', 'bob@example.com', 'bob123', '0987654321', 'Admin'),
+  ('Charlie', 'charlie@example.com', 'charlie123', '1122334455', 'Customer');
+
+SELECT user_id, name, email, phone, role FROM users;
+```
+
 **Purpose** : Stores authenticated system users with role-based access control.
 
 #### Sample Data :
@@ -62,6 +72,18 @@ CREATE TABLE vehicles (
     rental_price NUMERIC(10,2) NOT NULL,
     status VARCHAR(20) NOT NULL CHECK (status IN ('available', 'rented', 'maintenance'))
 );
+```
+
+```sql
+INSERT INTO vehicles (name, type, model, registration_number, rental_price, status)
+VALUES
+('Toyota Corolla', 'car', '2022', 'ABC-123', 50, 'available'),
+('Honda Civic', 'car', '2021', 'DEF-456', 60, 'rented'),
+('Yamaha R15', 'bike', '2023', 'GHI-789', 30, 'available'),
+('Ford F-150', 'truck', '2020', 'JKL-012', 100, 'maintenance');
+
+SELECT vehicle_id, name, type, model, registration_number, rental_price, status
+FROM vehicles;
 ```
 
 **Purpose** : Manages vehicle inventory, pricing, and current availability status.
@@ -90,6 +112,25 @@ CREATE TABLE bookings (
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
     CONSTRAINT fk_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
 );
+```
+
+```sql
+INSERT INTO bookings (
+    user_id,
+    vehicle_id,
+    start_date,
+    end_date,
+    status,
+    total_cost
+)
+VALUES
+  (1, 2, '2023-10-01', '2023-10-05', 'completed', 240),
+  (1, 2, '2023-11-01', '2023-11-03', 'completed', 120),
+  (3, 2, '2023-12-01', '2023-12-02', 'confirmed', 60),
+  (1, 1, '2023-12-10', '2023-12-12', 'pending', 100);
+
+  SELECT *
+FROM bookings;
 ```
 
 **Purpose** : Records rental transactions and enforces relationships between users and vehicles.
@@ -233,5 +274,3 @@ This project delivers a professional, scalable, and well-documented database sol
 
 - [queries.sql](./queries.sql) – All demonstrated SQL queries
 - [README.md](./README.md) – Project documentation (this file)
-
-
